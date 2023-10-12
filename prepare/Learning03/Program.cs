@@ -1,9 +1,30 @@
 using System;
-
-class Program
+public class Fractional
 {
-    static void Main(string[] args)
+    private int _top;
+    private int _bottom;
+    
+    public Fractional()
     {
-        Console.WriteLine("Hello Learning03 World!");
+        _top = 1;
+        _bottom = 1;
+    }
+
+    public Fractional(int wholeNumber)
+    { 
+        _top = wholeNumber;
+        _bottom = 1;
+    }
+
+    public string GetFractionalString()
+    {
+        string text = $"{_top}/{_bottom}";
+        return text;
+    }
+
+        public double GetDecimalValue()
+    {
+        return (double)_top / (double)_bottom;
     }
 }
+    
