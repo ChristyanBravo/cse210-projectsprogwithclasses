@@ -9,3 +9,167 @@
   </PropertyGroup>
 
 </Project>
+
+using System;
+
+class Program {
+
+  protected int duration;
+
+  public void Start() {
+    GetDuration();
+    StartingMessage();
+  }
+
+  private void GetDuration() {
+    Console.WriteLine("Enter duration in seconds: ");
+    duration = int.Parse(Console.ReadLine());
+  }
+
+  private void StartingMessage() {
+    Console.WriteLine("Get ready...");
+    CountdownAnimation(5); 
+  }
+
+  public void End() {
+    Console.WriteLine("\nYou did a great job!");
+    CountdownAnimation(5);
+    Console.WriteLine($"You completed the {duration} second activity.");
+    CountdownAnimation(5);
+  }
+}
+  
+abstract protected void RunActivity();
+
+
+
+
+  class ReflectionActivity : Activity {
+
+    protected override void RunActivity() {
+      
+      string[] prompts = {
+        "Think of a time when you stood up for someone else.",
+        "Think of a time when you did something really difficult.",
+        "Think of a time when you helped someone in need.",
+        "Think of a time when you did something truly selfless."
+      };
+
+      string prompt = prompts[new Random().Next(prompts.Length)];
+      Console.WriteLine(prompt);
+
+      string[] questions = {
+        "Why was this experience meaningful to you?",
+        "Have you ever done anything like this before?",
+        "How did you get started?",
+        "How did you feel when it was complete?",
+        "What made this time different than other times when you were not as successful?",
+        "What is your favorite thing about this experience?",
+        "What could you learn from this experience that applies to other situations?",  
+        "What did you learn about yourself through this experience?",
+        "How can you keep this experience in mind in the future?"
+      };
+
+      int seconds = duration;
+
+      while (seconds > 0) {
+        string question = questions[new Random().Next(questions.Length)];
+        Console.WriteLine(question);
+        CountdownAnimation(5);
+        seconds -= 5;
+      }
+
+    }
+
+  }
+
+  class BreathingActivity : Activity {
+
+    protected override void RunActivity() {
+
+      for (int i = 0; i < duration / 6; i++) {
+        Console.WriteLine("Breathe in...");
+        CountdownAnimation(3); 
+
+        Console.WriteLine("Breathe out...");
+        CountdownAnimation(3);
+      }
+
+    }
+
+  }
+
+  class ListingActivity : Activity {
+
+    protected override void RunActivity() {
+      
+      string[] prompts = {
+        "Who are people that you appreciate?",
+        "What are personal strengths of yours?",    
+        "Who are people that you have helped this week?",
+        "When have you felt the Holy Ghost this month?",
+        "Who are some of your personal heroes?"
+      };
+
+      string prompt = prompts[new Random().Next(prompts.Length)];
+      Console.WriteLine(prompt);
+
+      Console.WriteLine("Get ready...");
+      CountdownAnimation(5);
+
+      Console.WriteLine("Start listing!");
+
+      int count = 0;
+
+      while (duration > 0) {
+        string input = Console.ReadLine();
+        if (!string.IsNullOrEmpty(input)) {
+          count++;  
+        }
+        duration -= 5;
+      }
+
+      Console.WriteLine($"You listed {count} items!");
+
+    }
+
+  }
+
+Helper methods
+
+  static void CountdownAnimation(int seconds) {
+    for (int i = 0; i < seconds; i++) {
+      Console.Write(". ");
+      Thread.Sleep(1000);
+    }
+  }
+
+  static Activity GetActivity() {
+    Console.WriteLine("1. Reflection");
+    Console.WriteLine("2. Breathing");
+    Console.WriteLine("3. Listing");
+    Console.WriteLine("4. Exit");
+  }
+  int choice = int.Parse(Console.ReadLine());
+
+  switch (choice) {
+    case 1: return new ReflectionActivity();
+    case 2: return new BreathingActivity(); 
+    case 3: return new ListingActivity();
+    case 4: Environment.Exit(0);
+  }
+
+  return null;
+
+
+
+Main program
+  static void Main(string[] args) {
+
+    Activity activity = GetActivity();
+
+    activity.Start();
+    activity.RunActivity(); 
+    activity.End();
+
+  }
