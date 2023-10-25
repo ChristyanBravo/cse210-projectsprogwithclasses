@@ -9,3 +9,154 @@
   </PropertyGroup>
 
 </Project>
+using System;
+using System.Collections.Generic;
+
+// Base class for all types of goals
+abstract class Goal
+{
+    protected string name;
+    protected int basePoints;
+
+    public Goal(string name, int basePoints)
+    {
+        this.name = name;
+        this.basePoints = basePoints;
+    }
+
+    public abstract void DisplayProgress();
+
+    public virtual int CalculatePoints()
+    {
+        return basePoints;
+    }
+}
+
+// Simple goal class
+class SimpleGoal : Goal
+{
+    public SimpleGoal(string name, int basePoints) : base(name, basePoints) { }
+
+    public override void DisplayProgress()
+    {
+        Console.WriteLine($"[{(IsComplete() ? "X" : " ")}] {name}");
+    }
+
+    public bool IsComplete()
+    {
+        // Logic to check if the goal is complete
+        return true; // For demonstration purposes, always complete
+    }
+}
+
+// Eternal goal class
+class EternalGoal : Goal
+{
+    public EternalGoal(string name, int basePoints) : base(name, basePoints) { }
+
+    public override void DisplayProgress()
+    {
+        Console.WriteLine($"[E] {name}");
+    }
+}
+
+// Checklist goal class
+class ChecklistGoal : Goal
+{
+    private int targetCount;
+    private int completedCount;
+
+    public ChecklistGoal(string name, int basePoints, int targetCount) : base(name, basePoints)
+    {
+        this.targetCount = targetCount;
+        this.completedCount = 0;
+    }
+
+    public override void DisplayProgress()
+    {
+        Console.WriteLine($"[ ] {name} (Completed {completedCount}/{targetCount} times)");
+    }
+
+    public override int CalculatePoints()
+    {
+        if (completedCount >= targetCount)
+        {
+            // Bonus points for completing the checklist goal
+            return basePoints + 500;
+        }
+        return basePoints;
+    }
+
+    public void RecordCompletion()
+    {
+        completedCount++;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Goal> goals = new List<Goal>
+        {
+            new SimpleGoal("Run a marathon", 1000),
+            new EternalGoal("Read scriptures", 100),
+            new ChecklistGoal("Attend the temple", 50, 10)
+        };
+
+        while (true)
+        {
+            Console.WriteLine("Goals:");
+            for (int i = 0; i < goals.Count; i++)
+            {
+                goals[i].DisplayProgress();
+            }
+
+            Console.WriteLine("Options:");
+            Console.WriteLine("1. Record completion");
+            Console.WriteLine("2. Add new goal");
+            Console.WriteLine("3. Exit");
+
+            int choice = int.Parse(Console.ReadLine());
+
+            switch (choice)
+            {
+                case 1:
+                    Console.WriteLine("Enter the number of the goal to record completion:");
+                    int goalNumber = int.Parse(Console.ReadLine()) - 1;
+                    if (goalNumber >= 0 && goalNumber < goals.Count)
+                    {
+                        if (goals[goalNumber] is ChecklistGoal checklistGoal)
+                        {
+                            checklistGoal.RecordCompletion();
+                        }
+                        Console.WriteLine($"You gained {goals[goalNumber].CalculatePoints()} points!");
+                    }
+                    break;
+                case 2:
+                    Console.WriteLine("Enter the name of the new goal:");
+                    string newGoalName = Console.ReadLine();
+                    Console.WriteLine("Enter the type of the new goal (1. Simple, 2. Eternal, 3. Checklist):");
+                    int goalType = int.Parse(Console.ReadLine());
+                    switch (goalType)
+                    {
+                        case 1:
+                            goals.Add(new SimpleGoal(newGoalName, 200));
+                            break;
+                        case 2:
+                            goals.Add(new EternalGoal(newGoalName, 50));
+                            break;
+                        case 3:
+                            Console.WriteLine("Enter the target count for the checklist goal:");
+                            int targetCount = int.Parse(Console.ReadLine());
+                            goals.Add(new ChecklistGoal(newGoalName, 100, targetCount));
+                            break;
+                    }
+                    break;
+                case 3:
+                    Environment.Exit(0);
+                    break;
+            }
+        }
+    }
+}
