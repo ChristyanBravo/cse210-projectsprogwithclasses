@@ -9,3 +9,135 @@
   </PropertyGroup>
 
 </Project>
+using System;
+
+class Activity
+{
+    private DateTime date;
+    protected int duration; // Protected to allow access in derived classes
+
+    public Activity(DateTime date, int duration)
+    {
+        this.date = date;
+        this.duration = duration;
+    }
+
+    public virtual double GetDistance()
+    {
+        return 0; // Base class does not define distance calculation
+    }
+
+    public virtual double GetSpeed()
+    {
+        return 0; // Base class does not define speed calculation
+    }
+
+    public virtual double GetPace()
+    {
+        return 0; // Base class does not define pace calculation
+    }
+
+    public virtual string GetSummary()
+    {
+        return $"{date.ToString("dd MMM yyyy")} - {duration} min";
+    }
+}
+
+class Running : Activity
+{
+    private double distance; // in miles
+
+    public Running(DateTime date, int duration, double distance) : base(date, duration)
+    {
+        this.distance = distance;
+    }
+
+    public override double GetDistance()
+    {
+        return distance;
+    }
+
+    public override double GetSpeed()
+    {
+        return distance / (duration / 60); // miles per hour
+    }
+
+    public override double GetPace()
+    {
+        return duration / distance; // minutes per mile
+    }
+
+    public override string GetSummary()
+    {
+        return $"{base.GetSummary()} Running ({duration} min) - Distance {distance:F2} miles, Speed {GetSpeed():F2} mph, Pace: {GetPace():F2} min per mile";
+    }
+}
+
+class Cycling : Activity
+{
+    private double speed; // in mph
+
+    public Cycling(DateTime date, int duration, double speed) : base(date, duration)
+    {
+        this.speed = speed;
+    }
+
+    public override double GetSpeed()
+    {
+        return speed; // miles per hour
+    }
+
+    public override double GetPace()
+    {
+        return 60 / speed; // minutes per mile
+    }
+
+    public override string GetSummary()
+    {
+        return $"{base.GetSummary()} Cycling ({duration} min) - Speed {speed:F2} mph, Pace: {GetPace():F2} min per mile";
+    }
+}
+
+class Swimming : Activity
+{
+    private int laps; // laps in the lap pool
+
+    public Swimming(DateTime date, int duration, int laps) : base(date, duration)
+    {
+        this.laps = laps;
+    }
+
+    public override double GetDistance()
+    {
+        return laps * 50 / 1000 * 0.62; // miles
+    }
+
+    public override double GetSpeed()
+    {
+        return GetDistance() / (duration / 60); // miles per hour
+    }
+
+    public override double GetPace()
+    {
+        return duration / GetDistance(); // minutes per mile
+    }
+
+    public override string GetSummary()
+    {
+        return $"{base.GetSummary()} Swimming ({duration} min) - Distance {GetDistance():F2} miles, Speed {GetSpeed():F2} mph, Pace: {GetPace():F2} min per mile";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Activity runningActivity = new Running(new DateTime(2023, 10, 24), 30, 3.0);
+        Activity cyclingActivity = new Cycling(new DateTime(2023, 10, 24), 45, 15.5);
+        Activity swimmingActivity = new Swimming(new DateTime(2023, 10, 24), 40, 20);
+
+        Console.WriteLine(runningActivity.GetSummary());
+        Console.WriteLine(cyclingActivity.GetSummary());
+        Console.WriteLine(swimmingActivity.GetSummary());
+    }
+}

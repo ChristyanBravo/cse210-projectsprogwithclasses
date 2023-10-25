@@ -9,3 +9,88 @@
   </PropertyGroup>
 
 </Project>
+using System;
+using System.Collections.Generic;
+
+class Comment
+{
+    public string CommenterName { get; }
+    public string Text { get; }
+
+    public Comment(string commenterName, string text)
+    {
+        CommenterName = commenterName;
+        Text = text;
+    }
+}
+
+class Video
+{
+    public string Title { get; }
+    public string Author { get; }
+    public int Length { get; }
+    private List<Comment> Comments { get; }
+
+    public Video(string title, string author, int length)
+    {
+        Title = title;
+        Author = author;
+        Length = length;
+        Comments = new List<Comment>();
+    }
+
+    public void AddComment(string commenterName, string text)
+    {
+        Comment newComment = new Comment(commenterName, text);
+        Comments.Add(newComment);
+    }
+
+    public int GetNumComments()
+    {
+        return Comments.Count;
+    }
+
+    public List<Comment> GetComments()
+    {
+        return Comments;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Video> videos = new List<Video>();
+
+        Video video1 = new Video("Video 1 Title", "Author 1", 300); // 300 seconds = 5 minutes
+        video1.AddComment("User1", "Great video!");
+        video1.AddComment("User2", "I learned a lot.");
+        video1.AddComment("User3", "Keep up the good work!");
+        videos.Add(video1);
+
+        Video video2 = new Video("Video 2 Title", "Author 2", 480); // 480 seconds = 8 minutes
+        video2.AddComment("User4", "Interesting topic.");
+        video2.AddComment("User5", "I have a question.");
+        video2.AddComment("User6", "Can you provide more examples?");
+        videos.Add(video2);
+
+        Video video3 = new Video("Video 3 Title", "Author 3", 240); // 240 seconds = 4 minutes
+        video3.AddComment("User7", "Nice presentation!");
+        video3.AddComment("User8", "I like the visuals.");
+        videos.Add(video3);
+
+        foreach (var video in videos)
+        {
+            Console.WriteLine("Title: " + video.Title);
+            Console.WriteLine("Author: " + video.Author);
+            Console.WriteLine("Length: " + video.Length + " seconds");
+            Console.WriteLine("Number of Comments: " + video.GetNumComments());
+            Console.WriteLine("Comments:");
+            foreach (var comment in video.GetComments())
+            {
+                Console.WriteLine(comment.CommenterName + ": " + comment.Text);
+            }
+            Console.WriteLine("===============================");
+        }
+    }
+}
